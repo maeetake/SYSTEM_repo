@@ -1,0 +1,40 @@
+各イテレーションごとの実行時間:
+Iteration 1: 148.80 秒
+Iteration 2: 205.42 秒
+Iteration 3: 401.07 秒
+Iteration 4: 438.92 秒
+Iteration 5: 790.42 秒
+Iteration 6: 1029.51 秒
+Iteration 7: 1566.59 秒
+Iteration 8: 898.19 秒
+
+全体の実行時間: 5478.90 秒
+
+
+
+  | モジュール (担当プロンプト) | ファイル数 | 初回生成 | 修正回数 |
+  | :--- | :--- | :--- | :--- |
+  | 6.1_load_user-provided_data | 1 | 1 | 0 |
+  | 6.2_preprocess_data | 2 | 1 | 1 |
+  | 6.3_split_dataset | 1 | 1 | 0 |
+  | 6.4_build_lstm_and_transformer_models | 2 | 1 | 1 |
+  | 6.5_train_models | 1 | 1 | 0 |
+  | 6.6_evaluate_model_performance | 2 | 1 | 1 |
+  | 6.7_visualize_prediction_results | 1 | 1 | 0 |
+  | 6.8_visualize_training_history | 1 | 1 | 0 |
+  | 合計 | 11 | 8 | 3 |
+
+
+
+
+  | 統合ステップ (新たに追加されたモジュール) | ファイル数 | 初回生成 | 修正回数 |
+  | :--- | :--- | :--- | :--- |
+  | ステップ1 (a_load_user...) | 1 | 1 | 0 |
+  | ステップ2 (b_preprocess...) | 2 | 1 | 1 |
+  | ステップ3 (c_split_dataset...) | 3 | 1 | 2 |
+  | ステップ4 (d_build_lstm...) | 3 | 1 | 2 |
+  | ステップ5 (e_train_models...) | 3 | 1 | 2 |
+  | ステップ6 (f_evaluate_model...) | 3 | 1 | 2 |
+  | ステップ7 (g_visualize_prediction...) | 3 | 1 | 2 |
+  | ステップ8 (h_visualize_training...) | 2 | 1 | 1 |
+  | 合計 | 20 | 8 | 12 |

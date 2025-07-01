@@ -1,0 +1,11 @@
+各イテレーションごとの実行時間:
+Iteration 1: 212.26 秒
+Iteration 2: 417.69 秒
+Iteration 3: 419.91 秒
+Iteration 4: 1009.14 秒
+Iteration 5: 2149.43 秒
+Iteration 6: 899.43 秒
+Iteration 7: 804.22 秒
+Iteration 8: 540.88 秒
+
+全体の実行時間: 6452.97 秒

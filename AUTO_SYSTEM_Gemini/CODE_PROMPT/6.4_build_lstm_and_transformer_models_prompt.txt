@@ -1,0 +1,234 @@
+## Generate Python Code for Module: build_lstm_and_transformer_models
+
+Please generate Python module code based on the detailed specifications below. Ensure strict adherence to all specified requirements and accurately reflect the provided examples. If there are any ambiguities or contradictions in the specifications, use comments in the code to explain the reasoning and adopt a solution that prioritizes functionality and clarity.
+
+**1. Model Overview:**
+
+* **Role and Purpose:** The purpose of this module is to provide the structural blueprints for two distinct time-series forecasting models. These models, once built, will be passed to the training module. By creating both an LSTM and a Transformer, the system can later compare which architecture is more effective for predicting the next-day stock closing price based on the given historical data.
+* **Overall Specification:**
+```json
+{
+    "model_role": "An AI model to predict the next-day closing price of NVIDIA stock using historical price data.",
+    "instructions": [
+        "Load the user-provided CSV file containing daily OHLC data.",
+        "Preprocess the data: handle missing values, normalize features, and create sequential data for time series forecasting.",
+        "Split the dataset chronologically into training (80%), validation (10%), and test (10%) sets.",
+        "Build two separate deep learning models: one using LSTM and another using a Transformer architecture.",
+        "Train both models on the training set, using the validation set to monitor performance and prevent overfitting.",
+        "Evaluate the trained models on the test set using RMSE and MAE as performance metrics.",
+        "Visualize the prediction results by overlaying predicted values on actual values in a time series graph.",
+        "Generate a plot showing the training and validation loss function transition over epochs for each model."
+    ],
+    "constraints": [
+        "The sole data source must be the user-provided CSV file.",
+        "Only Open, High, Low, Close (OHLC) data from the file should be used as input features.",
+        "The model must predict the closing price for only one day ahead.",
+        "The selection of predictive models is strictly limited to LSTM and Transformer.",
+        "External data sources or APIs for data acquisition are prohibited."
+    ],
+    "model_details": {
+        "data_acquisition": [
+            "The model will be built using a single CSV file provided by the user.",
+            "The file must contain daily stock data for the last 5.5 years with columns for 'Date', 'Open', 'High', 'Low', and 'Close'.",
+            "Note: The data will be provided by the user directly. Do not use APIs, libraries, or external sources to acquire data without explicit instructions from the user."
+        ],
+        "data_preprocessing": [
+            "Check for and handle any missing values in the dataset (e.g., using forward fill).",
+            "Normalize the OHLC data using a scaler like MinMaxScaler to a range of [0, 1] to improve model stability and convergence.",
+            "Create input sequences (X) and corresponding target values (y). For example, use a sliding window of the past 60 days of OHLC data to predict the closing price of the 61st day."
+        ],
+        "model_selection": [
+            "Two models will be implemented and compared:",
+            "1. LSTM (Long Short-Term Memory): A type of Recurrent Neural Network (RNN) well-suited for learning from sequential data like time series.",
+            "2. Transformer: A model architecture based on self-attention mechanisms, which can capture long-range dependencies and complex patterns in time series data."
+        ],
+        "model_training": [
+            "The preprocessed data will be split chronologically: the first 80% for training, the next 10% for validation, and the final 10% for testing.",
+            "Both the LSTM and Transformer models will be trained on the training dataset to learn the patterns in the stock price movements.",
+            "The validation dataset will be used after each epoch to tune hyperparameters and monitor for overfitting.",
+            "The loss function transition during the training process will be plotted and saved as an image file."
+        ],
+        "model_evaluation": [
+            "The performance of the trained models will be assessed on the unseen test dataset.",
+            "Two evaluation metrics will be calculated: RMSE (Root Mean Squared Error) and MAE (Mean Absolute Error).",
+            "The actual and predicted closing prices for the test set will be plotted on a single time-series graph to visually inspect the prediction quality."
+        ],
+        "improvement_suggestions": [
+            "Incorporate technical indicators (e.g., Moving Averages, RSI, MACD) as additional input features.",
+            "Integrate external data sources such as market sentiment from news headlines or economic indicators.",
+            "Perform extensive hyperparameter tuning (e.g., number of layers, learning rate, sequence length) using techniques like Grid Search or Bayesian Optimization.",
+            "Experiment with other time-series forecasting models like GRU or hybrid models (e.g., CNN-LSTM)."
+        ]
+    },
+    "programming_recommendations": {
+        "preferred_language": "Python.",
+        "libraries": "Pandas, NumPy, scikit-learn, TensorFlow or PyTorch."
+    }
+}
+```
+
+**2. Module Definition:**
+
+* **Name:** build_lstm_and_transformer_models
+* **Concrete Tasks:**
+    [{'task_name': 'Build LSTM Model', 'description': 'Defines and constructs a sequential model using LSTM layers.', 'implementation_details': 'Create a function `build_lstm_model` that takes the input shape (sequence length, number of features) and returns an uncompiled `tf.keras.Model`. The architecture will consist of one or more LSTM layers, followed by Dropout layers for regularization, and a final Dense layer with a single neuron for the output prediction.', 'inputs': {'input_shape': 'A tuple of integers, e.g., (60, 4), representing (sequence_length, num_features).'}, 'outputs': {'lstm_model': 'An uncompiled `tf.keras.Model` object representing the LSTM architecture.'}}, {'task_name': 'Build Transformer Model', 'description': 'Defines and constructs a model using a Transformer encoder architecture.', 'implementation_details': 'Create a function `build_transformer_model` that takes the input shape, number of heads for attention, and other hyperparameters. It will return an uncompiled `tf.keras.Model`. This involves creating helper classes or functions for the Transformer Encoder Block, which includes Multi-Head Self-Attention and Position-wise Feed-Forward Networks, as well as Positional Encoding. The final model will stack these blocks and use a Global Average Pooling layer before a final Dense output layer.', 'inputs': {'input_shape': 'A tuple of integers, e.g., (60, 4), representing (sequence_length, num_features).'}, 'outputs': {'transformer_model': 'An uncompiled `tf.keras.Model` object representing the Transformer architecture.'}}]
+
+**3. Input/Output Specifications:**
+
+* **Input Format (with examples):**
+    The input to the functions in this module must be `input_shape` (a Python tuple of `int`). There are no direct data file inputs.
+* **Data Head (example):**
+```
+    Date  Close  Open  High  Low  Volume Change rate %
+2020/1/2   6.00  5.97  6.00 5.92 237.68M         2.04%
+2020/1/3   5.90  5.88  5.95 5.85 205.77M        -1.67%
+2020/1/6   5.93  5.81  5.93 5.78 262.91M         0.51%
+2020/1/7   6.00  5.96  6.04 5.91 319.21M         1.18%
+2020/1/8   6.01  5.99  6.05 5.95 277.24M         0.17%
+2020/1/9   6.08  6.10  6.15 6.02 255.44M         1.16%
+```
+* **Data Path:**
+    C:\Users\T25ma\OneDrive\Desktop\AUTO_SYSTEM_Gemini\UNITTEST_DATA\generated\expected_input.csv
+* **Expected Output Format (with examples):**
+    r'The outputs must be two distinct `tf.keras.Model` objects, one for the LSTM and one for the Transformer. These models must be uncompiled, ready for the training module to add a loss function and optimizer.'
+
+**4. Constraints and Dependencies:**
+* **Library Versions and Configurations:**
+    Python: 3.8+, TensorFlow: 2.10+, NumPy: 1.21+. Models must be implemented as `tf.keras.Model` subclasses or using the Keras Sequential/Functional API. No compilation of models should occur in this module.
+* **Error Handling Requirements (specific errors to handle and how):**
+    Errors related to invalid model architecture parameters (e.g., invalid input shape) should be logged as critical errors, and the execution should be halted, as subsequent training cannot proceed without valid models.
+
+**5. Code Skeleton (if applicable):**
+    import tensorflow as tf
+from tensorflow.keras import layers
+
+class TransformerEncoderBlock(layers.Layer):
+    def __init__(self, embed_dim, num_heads, ff_dim, rate=0.1):
+        super(TransformerEncoderBlock, self).__init__()
+        self.att = layers.MultiHeadAttention(num_heads=num_heads, key_dim=embed_dim)
+        self.ffn = tf.keras.Sequential([
+            layers.Dense(ff_dim, activation="relu"),
+            layers.Dense(embed_dim),
+        ])
+        self.layernorm1 = layers.LayerNormalization(epsilon=1e-6)
+        self.layernorm2 = layers.LayerNormalization(epsilon=1e-6)
+        self.dropout1 = layers.Dropout(rate)
+        self.dropout2 = layers.Dropout(rate)
+
+    def call(self, inputs, training):
+        attn_output = self.att(inputs, inputs)
+        attn_output = self.dropout1(attn_output, training=training)
+        out1 = self.layernorm1(inputs + attn_output)
+        ffn_output = self.ffn(out1)
+        ffn_output = self.dropout2(ffn_output, training=training)
+        return self.layernorm2(out1 + ffn_output)
+
+class PositionalEncoding(layers.Layer):
+    # Implementation for positional encoding
+    pass
+
+def build_lstm_model(input_shape: tuple) -> tf.keras.Model:
+    """
+    Builds an LSTM model architecture.
+
+    Args:
+        input_shape: A tuple specifying the input shape (sequence_length, num_features).
+
+    Returns:
+        An uncompiled tf.keras.Model for the LSTM.
+    """
+    if not (isinstance(input_shape, tuple) and len(input_shape) == 2 and all(isinstance(dim, int) and dim > 0 for dim in input_shape)):
+        raise ValueError(f"Invalid input_shape: {input_shape}. Expected a tuple of two positive integers.")
+
+    model = tf.keras.Sequential([
+        layers.Input(shape=input_shape),
+        layers.LSTM(units=50, return_sequences=True),
+        layers.Dropout(0.2),
+        layers.LSTM(units=50, return_sequences=False),
+        layers.Dropout(0.2),
+        layers.Dense(units=25, activation='relu'),
+        layers.Dense(units=1)
+    ])
+    return model
+
+def build_transformer_model(input_shape: tuple, head_size: int = 256, num_heads: int = 4, ff_dim: int = 4, num_transformer_blocks: int = 4, mlp_units: list = [128], dropout: float = 0.25, mlp_dropout: float = 0.4) -> tf.keras.Model:
+    """
+    Builds a Transformer model architecture.
+
+    Args:
+        input_shape: A tuple specifying the input shape (sequence_length, num_features).
+        head_size: Dimensionality of the model.
+        num_heads: Number of attention heads.
+        ff_dim: Hidden layer size in feed forward network inside transformer.
+        num_transformer_blocks: Number of encoder blocks to stack.
+        mlp_units: A list of integers for the final MLP layer sizes.
+        dropout: Dropout rate for the transformer block.
+        mlp_dropout: Dropout rate for the final MLP layers.
+
+    Returns:
+        An uncompiled tf.keras.Model for the Transformer.
+    """
+    if not (isinstance(input_shape, tuple) and len(input_shape) == 2 and all(isinstance(dim, int) and dim > 0 for dim in input_shape)):
+        raise ValueError(f"Invalid input_shape: {input_shape}. Expected a tuple of two positive integers.")
+
+    inputs = tf.keras.Input(shape=input_shape)
+    x = PositionalEncoding(input_shape[0], input_shape[1])(inputs) # Hypothetical implementation
+    x = layers.Dense(head_size)(x) # Project features to model dimension
+
+    for _ in range(num_transformer_blocks):
+        x = TransformerEncoderBlock(head_size, num_heads, ff_dim, dropout)(x)
+
+    x = layers.GlobalAveragePooling1D(data_format="channels_last")(x)
+    for dim in mlp_units:
+        x = layers.Dense(dim, activation="relu")(x)
+        x = layers.Dropout(mlp_dropout)(x)
+    outputs = layers.Dense(1)(x)
+
+    return tf.keras.Model(inputs=inputs, outputs=outputs)
+
+**6. Implementation Guidelines:**
+
+* **Data Retrieval Instructions:** Implement the process to load the dataset using the provided `data_path`. Adapt the retrieval method to the data source (e.g., CSV, JSON, database, or API). Ensure the program checks the validity of `data_path` and automatically loads the data without user intervention. If the file is missing or corrupted, handle errors with informative messages. Optionally, provide mock data for testing purposes to allow the program to proceed. ```python
+import pandas as pd
+import os
+
+def load_data(data_path: str):
+    if not os.path.exists(data_path):
+        raise FileNotFoundError(f"Error: File not found at {data_path}")
+    try:
+        # Adjust loading logic based on file type
+        if data_path.endswith('.csv'):
+            return pd.read_csv(data_path)
+        elif data_path.endswith('.json'):
+            return pd.read_json(data_path)
+        else:
+            raise ValueError("Unsupported file format. Please provide a CSV or JSON file.")
+    except Exception as e:
+        raise ValueError(f"Error loading data: {e}")
+```
+* **main Function Instructions:** Implement a main function as the program's entry point. The main function should be designed to execute without requiring any user input during runtime. Use the provided `data_path` to automatically load the necessary data. If the data is missing or the path is incorrect, handle errors with informative messages and provide mock data as a fallback if specified. ```python
+def main():
+    # Use default data path to automatically load data
+    data_path = 'C:\Users\T25ma\OneDrive\Desktop\AUTO_SYSTEM_Gemini\UNITTEST_DATA\generated\expected_input.csv'
+
+    # Load the data using the specified data path
+    try:
+        df = load_data(data_path)
+        print("Data loaded successfully. Head of the data:")
+        print(df.head())
+    except FileNotFoundError:
+        print("Data file not found. Please check the data path or provide valid data.")
+        # Optional: Use mock data if necessary
+        mock_data = pd.DataFrame({"column1": [0, 1, 2], "column2": ["sample1", "sample2", "sample3"]})
+        print("Using mock data:")
+        print(mock_data.head())
+    except Exception as e:
+        print(f"An error occurred: {e}")
+```
+* **Clarity and Readability:** Prioritize clear, concise, and well-commented code. Use descriptive variable names and function names.
+* **Modularity and Reusability:** Design the code for modularity and reusability, considering potential future extensions.
+* **Thorough Error Handling:** Implement robust error handling as specified in the `Error Handling Requirements` section, using appropriate exception classes and informative error messages. Include try-except blocks where necessary.
+* **Dependency Management:** If the module requires specific external libraries, clearly indicate these dependencies as comments at the beginning of the code. For example: `# Requires: pandas >= 1.0.0`
+* **Adherence to Specifications:** Ensure the generated code strictly adheres to the provided specifications. If any adjustments are necessary due to conflicting or ambiguous information, clearly document the rationale behind these changes in comments.
+* **Type Hinting (Recommended):** Use type hinting to improve code readability and maintainability.
+

@@ -1,0 +1,8 @@
+openai
+google-generativeai
+pandas
+numpy
+matplotlib
+tensorflow
+scikit-learn
+typing-extensions

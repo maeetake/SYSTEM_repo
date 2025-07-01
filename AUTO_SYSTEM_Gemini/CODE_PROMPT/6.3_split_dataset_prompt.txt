@@ -1,0 +1,196 @@
+## Generate Python Code for Module: split_dataset
+
+Please generate Python module code based on the detailed specifications below. Ensure strict adherence to all specified requirements and accurately reflect the provided examples. If there are any ambiguities or contradictions in the specifications, use comments in the code to explain the reasoning and adopt a solution that prioritizes functionality and clarity.
+
+**1. Model Overview:**
+
+* **Role and Purpose:** The purpose of this module is to prepare the dataset for the model training and evaluation stages. By creating chronologically distinct subsets (training, validation, test), it simulates a real-world forecasting scenario where a model learns from the past to predict the future. This strict separation prevents data leakage and ensures an unbiased assessment of the model's performance on unseen data.
+* **Overall Specification:**
+```json
+{
+    "model_role": "An AI model to predict the next-day closing price of NVIDIA stock using historical price data.",
+    "instructions": [
+        "Load the user-provided CSV file containing daily OHLC data.",
+        "Preprocess the data: handle missing values, normalize features, and create sequential data for time series forecasting.",
+        "Split the dataset chronologically into training (80%), validation (10%), and test (10%) sets.",
+        "Build two separate deep learning models: one using LSTM and another using a Transformer architecture.",
+        "Train both models on the training set, using the validation set to monitor performance and prevent overfitting.",
+        "Evaluate the trained models on the test set using RMSE and MAE as performance metrics.",
+        "Visualize the prediction results by overlaying predicted values on actual values in a time series graph.",
+        "Generate a plot showing the training and validation loss function transition over epochs for each model."
+    ],
+    "constraints": [
+        "The sole data source must be the user-provided CSV file.",
+        "Only Open, High, Low, Close (OHLC) data from the file should be used as input features.",
+        "The model must predict the closing price for only one day ahead.",
+        "The selection of predictive models is strictly limited to LSTM and Transformer.",
+        "External data sources or APIs for data acquisition are prohibited."
+    ],
+    "model_details": {
+        "data_acquisition": [
+            "The model will be built using a single CSV file provided by the user.",
+            "The file must contain daily stock data for the last 5.5 years with columns for 'Date', 'Open', 'High', 'Low', and 'Close'.",
+            "Note: The data will be provided by the user directly. Do not use APIs, libraries, or external sources to acquire data without explicit instructions from the user."
+        ],
+        "data_preprocessing": [
+            "Check for and handle any missing values in the dataset (e.g., using forward fill).",
+            "Normalize the OHLC data using a scaler like MinMaxScaler to a range of [0, 1] to improve model stability and convergence.",
+            "Create input sequences (X) and corresponding target values (y). For example, use a sliding window of the past 60 days of OHLC data to predict the closing price of the 61st day."
+        ],
+        "model_selection": [
+            "Two models will be implemented and compared:",
+            "1. LSTM (Long Short-Term Memory): A type of Recurrent Neural Network (RNN) well-suited for learning from sequential data like time series.",
+            "2. Transformer: A model architecture based on self-attention mechanisms, which can capture long-range dependencies and complex patterns in time series data."
+        ],
+        "model_training": [
+            "The preprocessed data will be split chronologically: the first 80% for training, the next 10% for validation, and the final 10% for testing.",
+            "Both the LSTM and Transformer models will be trained on the training dataset to learn the patterns in the stock price movements.",
+            "The validation dataset will be used after each epoch to tune hyperparameters and monitor for overfitting.",
+            "The loss function transition during the training process will be plotted and saved as an image file."
+        ],
+        "model_evaluation": [
+            "The performance of the trained models will be assessed on the unseen test dataset.",
+            "Two evaluation metrics will be calculated: RMSE (Root Mean Squared Error) and MAE (Mean Absolute Error).",
+            "The actual and predicted closing prices for the test set will be plotted on a single time-series graph to visually inspect the prediction quality."
+        ],
+        "improvement_suggestions": [
+            "Incorporate technical indicators (e.g., Moving Averages, RSI, MACD) as additional input features.",
+            "Integrate external data sources such as market sentiment from news headlines or economic indicators.",
+            "Perform extensive hyperparameter tuning (e.g., number of layers, learning rate, sequence length) using techniques like Grid Search or Bayesian Optimization.",
+            "Experiment with other time-series forecasting models like GRU or hybrid models (e.g., CNN-LSTM)."
+        ]
+    },
+    "programming_recommendations": {
+        "preferred_language": "Python.",
+        "libraries": "Pandas, NumPy, scikit-learn, TensorFlow or PyTorch."
+    }
+}
+```
+
+**2. Module Definition:**
+
+* **Name:** split_dataset
+* **Concrete Tasks:**
+    [{'task_id': 'split_dataset_1', 'task_description': 'Splits a given sequential dataset (features X and targets y) into training, validation, and test sets based on specified chronological proportions.', 'function_name': 'split_sequential_data', 'inputs': {'X': {'type': 'numpy.ndarray', 'description': 'A 3D array of input sequences. Shape: (num_samples, sequence_length, num_features).'}, 'y': {'type': 'numpy.ndarray', 'description': 'A 1D array of corresponding target values. Shape: (num_samples,).'}, 'split_ratios': {'type': 'tuple', 'description': 'A tuple containing the proportions for training, validation, and test sets, e.g., (0.8, 0.1, 0.1).'}}, 'outputs': {'datasets': {'type': 'dict', 'description': "A dictionary containing the six split arrays: 'X_train', 'y_train', 'X_val', 'y_val', 'X_test', 'y_test'."}}}]
+
+**3. Input/Output Specifications:**
+
+* **Input Format (with examples):**
+    {'X': 'A 3D NumPy array of `float32` type with shape `(num_samples, sequence_length, num_features)`.', 'y': 'A 1D NumPy array of `float32` type with shape `(num_samples,)`.', 'split_ratios': 'A tuple of three floats that sum to 1.0.'}
+* **Data Head (example):**
+```
+    Date  Close  Open  High  Low  Volume Change rate %
+2020/1/2   6.00  5.97  6.00 5.92 237.68M         2.04%
+2020/1/3   5.90  5.88  5.95 5.85 205.77M        -1.67%
+2020/1/6   5.93  5.81  5.93 5.78 262.91M         0.51%
+2020/1/7   6.00  5.96  6.04 5.91 319.21M         1.18%
+2020/1/8   6.01  5.99  6.05 5.95 277.24M         0.17%
+2020/1/9   6.08  6.10  6.15 6.02 255.44M         1.16%
+```
+* **Data Path:**
+    C:\Users\T25ma\OneDrive\Desktop\AUTO_SYSTEM_Gemini\UNITTEST_DATA\generated\expected_input.csv
+* **Expected Output Format (with examples):**
+    r'{'datasets': "A dictionary where keys are strings ('X_train', 'y_train', etc.) and values are the corresponding NumPy arrays of type `float32`. The shape of each array will depend on the split calculation."}'
+
+**4. Constraints and Dependencies:**
+* **Library Versions and Configurations:**
+    {
+  "numpy": ">=1.20.0"
+}
+* **Error Handling Requirements (specific errors to handle and how):**
+    In case of a `ValueError` due to insufficient data, the error message should clearly state the number of samples available and the number required to perform the split. Errors should be logged before being raised.
+
+**5. Code Skeleton (if applicable):**
+    import numpy as np
+from typing import Dict, Tuple, List
+
+def split_sequential_data(X: np.ndarray, y: np.ndarray, split_ratios: Tuple[float, float, float] = (0.8, 0.1, 0.1)) -> Dict[str, np.ndarray]:
+    """
+    Splits time series data chronologically into training, validation, and test sets.
+
+    Args:
+        X (np.ndarray): The input feature sequences.
+        y (np.ndarray): The target values.
+        split_ratios (Tuple[float, float, float]): The ratios for train, validation, and test sets.
+
+    Returns:
+        Dict[str, np.ndarray]: A dictionary containing the split datasets.
+
+    Raises:
+        ValueError: If X and y have mismatched lengths or if the dataset is too small.
+    """
+    if X.shape[0] != y.shape[0]:
+        raise ValueError("Input arrays X and y must have the same number of samples.")
+
+    total_samples = X.shape[0]
+    train_ratio, val_ratio, test_ratio = split_ratios
+
+    if not np.isclose(train_ratio + val_ratio + test_ratio, 1.0):
+        raise ValueError("Split ratios must sum to 1.0.")
+
+    train_split_idx = int(total_samples * train_ratio)
+    val_split_idx = int(total_samples * (train_ratio + val_ratio))
+
+    if train_split_idx == 0 or val_split_idx == train_split_idx or val_split_idx == total_samples:
+        raise ValueError(f"Insufficient data for splitting. Total samples: {total_samples}. Cannot create non-empty train/val/test sets with the given ratios.")
+
+    X_train, y_train = X[:train_split_idx], y[:train_split_idx]
+    X_val, y_val = X[train_split_idx:val_split_idx], y[train_split_idx:val_split_idx]
+    X_test, y_test = X[val_split_idx:], y[val_split_idx:]
+
+    return {
+        'X_train': X_train,
+        'y_train': y_train,
+        'X_val': X_val,
+        'y_val': y_val,
+        'X_test': X_test,
+        'y_test': y_test
+    }
+
+
+**6. Implementation Guidelines:**
+
+* **Data Retrieval Instructions:** Implement the process to load the dataset using the provided `data_path`. Adapt the retrieval method to the data source (e.g., CSV, JSON, database, or API). Ensure the program checks the validity of `data_path` and automatically loads the data without user intervention. If the file is missing or corrupted, handle errors with informative messages. Optionally, provide mock data for testing purposes to allow the program to proceed. ```python
+import pandas as pd
+import os
+
+def load_data(data_path: str):
+    if not os.path.exists(data_path):
+        raise FileNotFoundError(f"Error: File not found at {data_path}")
+    try:
+        # Adjust loading logic based on file type
+        if data_path.endswith('.csv'):
+            return pd.read_csv(data_path)
+        elif data_path.endswith('.json'):
+            return pd.read_json(data_path)
+        else:
+            raise ValueError("Unsupported file format. Please provide a CSV or JSON file.")
+    except Exception as e:
+        raise ValueError(f"Error loading data: {e}")
+```
+* **main Function Instructions:** Implement a main function as the program's entry point. The main function should be designed to execute without requiring any user input during runtime. Use the provided `data_path` to automatically load the necessary data. If the data is missing or the path is incorrect, handle errors with informative messages and provide mock data as a fallback if specified. ```python
+def main():
+    # Use default data path to automatically load data
+    data_path = 'C:\Users\T25ma\OneDrive\Desktop\AUTO_SYSTEM_Gemini\UNITTEST_DATA\generated\expected_input.csv'
+
+    # Load the data using the specified data path
+    try:
+        df = load_data(data_path)
+        print("Data loaded successfully. Head of the data:")
+        print(df.head())
+    except FileNotFoundError:
+        print("Data file not found. Please check the data path or provide valid data.")
+        # Optional: Use mock data if necessary
+        mock_data = pd.DataFrame({"column1": [0, 1, 2], "column2": ["sample1", "sample2", "sample3"]})
+        print("Using mock data:")
+        print(mock_data.head())
+    except Exception as e:
+        print(f"An error occurred: {e}")
+```
+* **Clarity and Readability:** Prioritize clear, concise, and well-commented code. Use descriptive variable names and function names.
+* **Modularity and Reusability:** Design the code for modularity and reusability, considering potential future extensions.
+* **Thorough Error Handling:** Implement robust error handling as specified in the `Error Handling Requirements` section, using appropriate exception classes and informative error messages. Include try-except blocks where necessary.
+* **Dependency Management:** If the module requires specific external libraries, clearly indicate these dependencies as comments at the beginning of the code. For example: `# Requires: pandas >= 1.0.0`
+* **Adherence to Specifications:** Ensure the generated code strictly adheres to the provided specifications. If any adjustments are necessary due to conflicting or ambiguous information, clearly document the rationale behind these changes in comments.
+* **Type Hinting (Recommended):** Use type hinting to improve code readability and maintainability.
+

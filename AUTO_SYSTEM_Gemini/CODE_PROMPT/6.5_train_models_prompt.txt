@@ -1,0 +1,192 @@
+## Generate Python Code for Module: train_models
+
+Please generate Python module code based on the detailed specifications below. Ensure strict adherence to all specified requirements and accurately reflect the provided examples. If there are any ambiguities or contradictions in the specifications, use comments in the code to explain the reasoning and adopt a solution that prioritizes functionality and clarity.
+
+**1. Model Overview:**
+
+* **Role and Purpose:** The purpose of this module is to use the training dataset to teach the LSTM and Transformer models the underlying patterns of stock price movements. By iteratively adjusting their internal weights based on a loss function, the models learn to predict the next day's closing price. The validation set is used concurrently to prevent overfitting, ensuring that the models generalize well to data they have not been trained on. This module produces the two core artifacts: the trained models.
+* **Overall Specification:**
+```json
+{
+    "model_role": "An AI model to predict the next-day closing price of NVIDIA stock using historical price data.",
+    "instructions": [
+        "Load the user-provided CSV file containing daily OHLC data.",
+        "Preprocess the data: handle missing values, normalize features, and create sequential data for time series forecasting.",
+        "Split the dataset chronologically into training (80%), validation (10%), and test (10%) sets.",
+        "Build two separate deep learning models: one using LSTM and another using a Transformer architecture.",
+        "Train both models on the training set, using the validation set to monitor performance and prevent overfitting.",
+        "Evaluate the trained models on the test set using RMSE and MAE as performance metrics.",
+        "Visualize the prediction results by overlaying predicted values on actual values in a time series graph.",
+        "Generate a plot showing the training and validation loss function transition over epochs for each model."
+    ],
+    "constraints": [
+        "The sole data source must be the user-provided CSV file.",
+        "Only Open, High, Low, Close (OHLC) data from the file should be used as input features.",
+        "The model must predict the closing price for only one day ahead.",
+        "The selection of predictive models is strictly limited to LSTM and Transformer.",
+        "External data sources or APIs for data acquisition are prohibited."
+    ],
+    "model_details": {
+        "data_acquisition": [
+            "The model will be built using a single CSV file provided by the user.",
+            "The file must contain daily stock data for the last 5.5 years with columns for 'Date', 'Open', 'High', 'Low', and 'Close'.",
+            "Note: The data will be provided by the user directly. Do not use APIs, libraries, or external sources to acquire data without explicit instructions from the user."
+        ],
+        "data_preprocessing": [
+            "Check for and handle any missing values in the dataset (e.g., using forward fill).",
+            "Normalize the OHLC data using a scaler like MinMaxScaler to a range of [0, 1] to improve model stability and convergence.",
+            "Create input sequences (X) and corresponding target values (y). For example, use a sliding window of the past 60 days of OHLC data to predict the closing price of the 61st day."
+        ],
+        "model_selection": [
+            "Two models will be implemented and compared:",
+            "1. LSTM (Long Short-Term Memory): A type of Recurrent Neural Network (RNN) well-suited for learning from sequential data like time series.",
+            "2. Transformer: A model architecture based on self-attention mechanisms, which can capture long-range dependencies and complex patterns in time series data."
+        ],
+        "model_training": [
+            "The preprocessed data will be split chronologically: the first 80% for training, the next 10% for validation, and the final 10% for testing.",
+            "Both the LSTM and Transformer models will be trained on the training dataset to learn the patterns in the stock price movements.",
+            "The validation dataset will be used after each epoch to tune hyperparameters and monitor for overfitting.",
+            "The loss function transition during the training process will be plotted and saved as an image file."
+        ],
+        "model_evaluation": [
+            "The performance of the trained models will be assessed on the unseen test dataset.",
+            "Two evaluation metrics will be calculated: RMSE (Root Mean Squared Error) and MAE (Mean Absolute Error).",
+            "The actual and predicted closing prices for the test set will be plotted on a single time-series graph to visually inspect the prediction quality."
+        ],
+        "improvement_suggestions": [
+            "Incorporate technical indicators (e.g., Moving Averages, RSI, MACD) as additional input features.",
+            "Integrate external data sources such as market sentiment from news headlines or economic indicators.",
+            "Perform extensive hyperparameter tuning (e.g., number of layers, learning rate, sequence length) using techniques like Grid Search or Bayesian Optimization.",
+            "Experiment with other time-series forecasting models like GRU or hybrid models (e.g., CNN-LSTM)."
+        ]
+    },
+    "programming_recommendations": {
+        "preferred_language": "Python.",
+        "libraries": "Pandas, NumPy, scikit-learn, TensorFlow or PyTorch."
+    }
+}
+```
+
+**2. Module Definition:**
+
+* **Name:** train_models
+* **Concrete Tasks:**
+    [{'task_id': 'train_models_1', 'name': 'train_model', 'description': 'A function to train a given model on the training data, using the validation data for performance monitoring and to save the best model.', 'inputs': [{'name': 'model', 'type': 'tensorflow.keras.Model or torch.nn.Module', 'description': 'The compiled, un-trained model architecture (either LSTM or Transformer).'}, {'name': 'X_train', 'type': 'numpy.ndarray', 'format': '3D array of shape (num_samples, sequence_length, num_features) with float32 values.'}, {'name': 'y_train', 'type': 'numpy.ndarray', 'format': '1D array of shape (num_samples,) with float32 values.'}, {'name': 'X_val', 'type': 'numpy.ndarray', 'format': '3D array of shape (num_samples, sequence_length, num_features) with float32 values.'}, {'name': 'y_val', 'type': 'numpy.ndarray', 'format': '1D array of shape (num_samples,) with float32 values.'}, {'name': 'training_params', 'type': 'dict', 'description': "A dictionary containing hyperparameters for training, e.g., {'epochs': 50, 'batch_size': 32}."}], 'outputs': [{'name': 'trained_model', 'type': 'tensorflow.keras.Model or torch.nn.Module', 'description': 'The model with the weights that achieved the best performance on the validation set.'}, {'name': 'training_history', 'type': 'dict', 'description': "A dictionary or history object containing lists of training and validation loss values for each epoch. Example: {'loss': [0.1, 0.08, ...], 'val_loss': [0.12, 0.09, ...]}"}]}]
+
+**3. Input/Output Specifications:**
+
+* **Input Format (with examples):**
+    Inputs (`X_train`, `y_train`, `X_val`, `y_val`) must be NumPy arrays of type `numpy.float32`. The model input must be a compiled instance of `tf.keras.Model` or a `torch.nn.Module` with a defined forward pass.
+* **Data Head (example):**
+```
+    Date  Open  High  Low  Close
+2020/1/2  5.97  6.00 5.92   6.00
+2020/1/3  5.88  5.95 5.85   5.90
+2020/1/6  5.81  5.93 5.78   5.93
+2020/1/7  5.96  6.04 5.91   6.00
+2020/1/8  5.99  6.05 5.95   6.01
+2020/1/9  6.10  6.15 6.02   6.08
+```
+* **Data Path:**
+    C:\Users\T25ma\OneDrive\Desktop\AUTO_SYSTEM_Gemini\UNITTEST_DATA\generated\expected_input.csv
+* **Expected Output Format (with examples):**
+    r'The primary outputs are the trained model object and a history object/dictionary. The trained model should be saved to disk in the framework's standard format (e.g., .h5 for Keras). The history object's data (training/validation loss) must be accessible for the `visualize_results` module.'
+
+**4. Constraints and Dependencies:**
+* **Library Versions and Configurations:**
+    Use TensorFlow >= 2.10 or PyTorch >= 1.12. Training should be configured to use a GPU if available to accelerate the process. The Adam optimizer is recommended.
+* **Error Handling Requirements (specific errors to handle and how):**
+    Log start and end of training for each model. At each epoch, log the training and validation loss to a file or standard output for real-time monitoring. Implement EarlyStopping to halt training if validation loss does not improve for a set number of epochs (e.g., 10), preventing wasted computation and overfitting.
+
+**5. Code Skeleton (if applicable):**
+    import tensorflow as tf
+from typing import Tuple, Dict, Any
+import numpy as np
+
+def train_model(model: tf.keras.Model, 
+                X_train: np.ndarray, 
+                y_train: np.ndarray, 
+                X_val: np.ndarray, 
+                y_val: np.ndarray, 
+                training_params: Dict[str, Any]) -> Tuple[tf.keras.Model, tf.keras.callbacks.History]:
+    """
+    Trains a given Keras model on the provided training and validation datasets.
+
+    Args:
+        model (tf.keras.Model): The compiled Keras model to be trained.
+        X_train (np.ndarray): Training data features.
+        y_train (np.ndarray): Training data targets.
+        X_val (np.ndarray): Validation data features.
+        y_val (np.ndarray): Validation data targets.
+        training_params (Dict[str, Any]): Dictionary of training parameters like 'epochs' and 'batch_size'.
+
+    Returns:
+        Tuple[tf.keras.Model, tf.keras.callbacks.History]: A tuple containing the trained model and the training history object.
+    """
+
+    # Example: Configure callbacks for early stopping and saving the best model
+    early_stopping = tf.keras.callbacks.EarlyStopping(monitor='val_loss', 
+                                                      patience=10, 
+                                                      restore_best_weights=True)
+
+    print(f"--- Starting Training for {model.name} ---")
+    history = model.fit(
+        X_train,
+        y_train,
+        epochs=training_params.get('epochs', 50),
+        batch_size=training_params.get('batch_size', 32),
+        validation_data=(X_val, y_val),
+        callbacks=[early_stopping],
+        verbose=1
+    )
+    print(f"--- Finished Training for {model.name} ---")
+
+    return model, history
+
+
+**6. Implementation Guidelines:**
+
+* **Data Retrieval Instructions:** Implement the process to load the dataset using the provided `data_path`. Adapt the retrieval method to the data source (e.g., CSV, JSON, database, or API). Ensure the program checks the validity of `data_path` and automatically loads the data without user intervention. If the file is missing or corrupted, handle errors with informative messages. Optionally, provide mock data for testing purposes to allow the program to proceed. ```python
+import pandas as pd
+import os
+
+def load_data(data_path: str):
+    if not os.path.exists(data_path):
+        raise FileNotFoundError(f"Error: File not found at {data_path}")
+    try:
+        # Adjust loading logic based on file type
+        if data_path.endswith('.csv'):
+            return pd.read_csv(data_path)
+        elif data_path.endswith('.json'):
+            return pd.read_json(data_path)
+        else:
+            raise ValueError("Unsupported file format. Please provide a CSV or JSON file.")
+    except Exception as e:
+        raise ValueError(f"Error loading data: {e}")
+```
+* **main Function Instructions:** Implement a main function as the program's entry point. The main function should be designed to execute without requiring any user input during runtime. Use the provided `data_path` to automatically load the necessary data. If the data is missing or the path is incorrect, handle errors with informative messages and provide mock data as a fallback if specified. ```python
+def main():
+    # Use default data path to automatically load data
+    data_path = 'C:\Users\T25ma\OneDrive\Desktop\AUTO_SYSTEM_Gemini\UNITTEST_DATA\generated\expected_input.csv'
+
+    # Load the data using the specified data path
+    try:
+        df = load_data(data_path)
+        print("Data loaded successfully. Head of the data:")
+        print(df.head())
+    except FileNotFoundError:
+        print("Data file not found. Please check the data path or provide valid data.")
+        # Optional: Use mock data if necessary
+        mock_data = pd.DataFrame({"column1": [0, 1, 2], "column2": ["sample1", "sample2", "sample3"]})
+        print("Using mock data:")
+        print(mock_data.head())
+    except Exception as e:
+        print(f"An error occurred: {e}")
+```
+* **Clarity and Readability:** Prioritize clear, concise, and well-commented code. Use descriptive variable names and function names.
+* **Modularity and Reusability:** Design the code for modularity and reusability, considering potential future extensions.
+* **Thorough Error Handling:** Implement robust error handling as specified in the `Error Handling Requirements` section, using appropriate exception classes and informative error messages. Include try-except blocks where necessary.
+* **Dependency Management:** If the module requires specific external libraries, clearly indicate these dependencies as comments at the beginning of the code. For example: `# Requires: pandas >= 1.0.0`
+* **Adherence to Specifications:** Ensure the generated code strictly adheres to the provided specifications. If any adjustments are necessary due to conflicting or ambiguous information, clearly document the rationale behind these changes in comments.
+* **Type Hinting (Recommended):** Use type hinting to improve code readability and maintainability.
+
