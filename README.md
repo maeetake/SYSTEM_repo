@@ -42,7 +42,33 @@
    ```bash
    pip install -r requirements.txt
    ```
-3. 各`AUTO_SYSTEM_*`ディレクトリ内の`config.py`に必要なAPIキーなどの設定を記述します。
+3. 各LLMのAPIキーを環境変数に設定します。これにより、コード内に直接キーを記述する必要がなくなり、セキュリティが向上します。
+
+   **Windows (コマンドプロンプト)**
+   ```bash
+   setx OPENAI_API_KEY "YOUR_OPENAI_API_KEY"
+   setx GEMINI_API_KEY "YOUR_GEMINI_API_KEY"
+   setx CLAUDE_API_KEY "YOUR_CLAUDE_API_KEY"
+   ```
+   コマンドプロンプトを再起動すると、環境変数が反映されます。
+
+   **Windows (PowerShell)**
+   ```powershell
+   $env:OPENAI_API_KEY="YOUR_OPENAI_API_KEY"
+   $env:GEMINI_API_KEY="YOUR_GEMINI_API_KEY"
+   $env:CLAUDE_API_KEY="YOUR_CLAUDE_API_KEY"
+   ```
+   恒久的に設定する場合は、`[System.Environment]::SetEnvironmentVariable("OPENAI_API_KEY", "YOUR_OPENAI_API_KEY", "User")`のように実行してください。
+
+   **macOS / Linux**
+   ```bash
+   export OPENAI_API_KEY="YOUR_OPENAI_API_KEY"
+   export GEMINI_API_KEY="YOUR_GEMINI_API_KEY"
+   export CLAUDE_API_KEY="YOUR_CLAUDE_API_KEY"
+   ```
+   この設定を永続化させるには、`.bashrc`や`.zshrc`などのシェル設定ファイルに上記の行を追記してください。
+
+   **注意:** `config.py`内のAPIキー読み込み処理が、これらの環境変数を参照するように実装されている必要があります。
 
 ## 使い方
 
